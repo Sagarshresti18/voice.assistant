@@ -16,6 +16,7 @@ from googlesearch import search
 import threading
 import time
 import logging
+import pyautogui
 from config import Config
 
 class AdvancedVoiceAssistant:
@@ -292,6 +293,48 @@ class AdvancedVoiceAssistant:
         except Exception as e:
             self.logger.error(f"Google search error: {e}")
             self.speak("Sorry, there was an error searching Google")
+
+    def open_website(self, website):
+        """Opens a website in the default browser."""
+        try:
+            # Ensure the website has a valid scheme
+            if not website.startswith(('http://', 'https://')):
+                website = 'https://' + website
+
+            webbrowser.open(website)
+            response = Config.RESPONSES['website_opened'].format(website=website)
+            self.speak(response)
+        except Exception as e:
+            self.logger.error(f"Website opening error: {e}")
+            self.speak(f"Sorry, I couldn't open {website}")
+
+    def close_feature(self, entity):
+        """Closes a tab or an application."""
+        try:
+            if entity in ('tab', 'window', 'application'):
+                pyautogui.hotkey('ctrl', 'w')
+                self.speak(Config.RESPONSES['tab_closed'])
+            else:
+                system = platform.system()
+                app_name = entity
+                if app_name.lower() in Config.APPLICATIONS:
+                    app_name = Config.APPLICATIONS[app_name.lower()]
+
+                if system == "Windows":
+                    subprocess.run(['taskkill', '/F', '/IM', app_name], check=True)
+                elif system == "Darwin":  # macOS
+                    subprocess.run(['pkill', '-f', app_name], check=True)
+                else:  # Linux
+                    subprocess.run(['pkill', '-f', app_name], check=True)
+
+                response = Config.RESPONSES['app_closed'].format(app=entity)
+                self.speak(response)
+        except subprocess.CalledProcessError:
+            response = Config.RESPONSES['app_not_found_to_close'].format(app=entity)
+            self.speak(response)
+        except Exception as e:
+            self.logger.error(f"Closing error: {e}")
+            self.speak(f"Sorry, I couldn't close {entity}")
     
     def get_weather(self, location=None):
         """Enhanced weather information"""
@@ -449,6 +492,14 @@ class AdvancedVoiceAssistant:
                 print("🔍 Searching Google...")
                 self.search_google(entity)
             
+            elif intent == "open_website":
+                print("🌐 Opening website...")
+                self.open_website(entity)
+
+            elif intent == "close":
+                print("🔒 Closing...")
+                self.close_feature(entity)
+
             elif intent == "weather":
                 print("🌤️ Getting weather information...")
                 self.get_weather(entity)

@@ -1,0 +1,9 @@
+SpeechRecognition
+PyAudio
+pyttsx3
+spotipy
+requests
+wikipedia
+googlesearch-python
+python-dotenv
+pyautogui

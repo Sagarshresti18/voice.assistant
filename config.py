@@ -141,6 +141,18 @@ class Config:
             r'what\'s in the news',
             r'current events'
         ],
+        'open_website': [
+            r'open website (.+)',
+            r'open (.+)\.com'
+        ],
+        'close': [
+            r'close tab',
+            r'close the tab',
+            r'close window',
+            r'close the window',
+            r'close application',
+            r'close (.+)'
+        ],
         'open_app': [
             r'open (.*)',
             r'launch (.*)',
@@ -206,6 +218,10 @@ class Config:
         'spotify_no_device': "No active Spotify devices found. Please open Spotify on a device.",
         'youtube_search': "Searching YouTube for {query}",
         'google_search': "Searching Google for {query}",
+        'website_opened': "Opening {website} in your browser.",
+        'tab_closed': "Closed the tab.",
+        'app_closed': "Closed {app}.",
+        'app_not_found_to_close': "Sorry, I couldn't find {app} to close.",
         'weather_info': "The weather in {location} is {description} with a temperature of {temp}°C, feels like {feels_like}°C",
         'weather_not_found': "Sorry, I couldn't find weather information for {location}",
         'time_response': "The current time is {time}",
